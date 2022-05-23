@@ -14,4 +14,29 @@ export class UsersService {
 
     return this.usersRepository.save(user);
   }
+
+  findOne(id: number): Promise<User> {
+    return this.usersRepository.findOne(id);
+  }
+
+  find(email: string): Promise<User[]> {
+    return this.usersRepository.find({ email });
+  }
+
+  async update(id: number, attributes: Partial<User>): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new Error('User not found!');
+    }
+    Object.assign(user, attributes);
+    return this.usersRepository.save(user);
+  }
+
+  async remove(id: number): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new Error('User not found!');
+    }
+    return this.usersRepository.remove(user);
+  }
 }
