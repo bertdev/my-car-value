@@ -1,24 +1,30 @@
 import { Test } from '@nestjs/testing';
 import { AuthService, UsersService } from './index';
 
-it('can create an instance of AuthService', async () => {
-  const fakeUsersService: Partial<UsersService> = {
-    find: () => Promise.resolve([]),
-    create: (email: string, password: string) =>
-      Promise.resolve({ id: 1, email, password }),
-  };
+describe('AuthService', () => {
+  let service: AuthService;
 
-  const module = await Test.createTestingModule({
-    providers: [
-      AuthService,
-      {
-        provide: UsersService,
-        useValue: fakeUsersService,
-      },
-    ],
-  }).compile();
+  beforeEach(async () => {
+    const fakeUsersService: Partial<UsersService> = {
+      find: () => Promise.resolve([]),
+      create: (email: string, password: string) =>
+        Promise.resolve({ id: 1, email, password }),
+    };
 
-  const service = module.get(AuthService);
+    const module = await Test.createTestingModule({
+      providers: [
+        AuthService,
+        {
+          provide: UsersService,
+          useValue: fakeUsersService,
+        },
+      ],
+    }).compile();
 
-  expect(service).toBeInstanceOf(AuthService);
+    service = module.get(AuthService);
+  });
+
+  it('can create an instance of AuthService', async () => {
+    expect(service).toBeInstanceOf(AuthService);
+  });
 });
