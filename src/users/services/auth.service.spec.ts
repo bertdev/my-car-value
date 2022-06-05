@@ -1,5 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { User } from '../user.entity';
 import { AuthService, UsersService } from './index';
 
 describe('AuthService', () => {
@@ -7,10 +8,15 @@ describe('AuthService', () => {
   let fakeUsersService: Partial<UsersService>;
 
   beforeEach(async () => {
+    const users: User[] = [];
     fakeUsersService = {
-      find: () => Promise.resolve([]),
-      create: (email: string, password: string) =>
-        Promise.resolve({ id: 1, email, password }),
+      find: (email: string) =>
+        Promise.resolve(users.filter((i) => i.email === email)),
+      create: (email: string, password: string) => {
+        const user = { id: Math.floor(Math.random() * 9999), email, password };
+        users.push(user);
+        return Promise.resolve(user);
+      },
     };
 
     const module = await Test.createTestingModule({
@@ -45,8 +51,7 @@ describe('AuthService', () => {
   });
 
   it('throws an error if user signs up with email that is in use', async () => {
-    fakeUsersService.find = (email: string) =>
-      Promise.resolve([{ id: 1, email, password: 'test' }]);
+    await service.signup('test@test.com', 'test');
     await expect(service.signup('test@test.com', 'test')).rejects.toThrow(
       BadRequestException,
     );
@@ -59,16 +64,14 @@ describe('AuthService', () => {
   });
 
   it('throws if a invalid password is provided', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([{ id: 1, email: 'test@test.com', password: 'test' }]);
+    await service.signup('test@test.com', 'test');
     await expect(
       service.signin('test@test.com', 'test1234'),
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
   it('returns a user if password and email provided are correct', async () => {
-    const newUser = await service.signup('test@test.com', 'test');
-    fakeUsersService.find = () => Promise.resolve([{ ...newUser }]);
+    await service.signup('test@test.com', 'test');
     const user = await service.signin('test@test.com', 'test');
     expect(user).toBeDefined();
   });
