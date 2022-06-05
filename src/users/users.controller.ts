@@ -13,11 +13,10 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UsersService } from './users.service';
+import { UsersService, AuthService } from './services';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { UserDto } from './dtos/user.dto';
-import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/auth.guard';
 import { User } from './user.entity';
 
