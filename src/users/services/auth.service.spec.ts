@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AuthService, UsersService } from './index';
 
@@ -44,11 +44,32 @@ describe('AuthService', () => {
     expect(hash).toBeDefined();
   });
 
-  it('throw an error if user signs up with email that is in use', async () => {
+  it('throws an error if user signs up with email that is in use', async () => {
     fakeUsersService.find = (email: string) =>
       Promise.resolve([{ id: 1, email, password: 'test' }]);
     await expect(service.signup('test@test.com', 'test')).rejects.toThrow(
       BadRequestException,
     );
+  });
+
+  it('throws if signin is called with an unused email', async () => {
+    await expect(service.signin('test@test.com', 'test')).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  it('throws if a invalid password is provided', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([{ id: 1, email: 'test@test.com', password: 'test' }]);
+    await expect(
+      service.signin('test@test.com', 'test1234'),
+    ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('returns a user if password and email provided are correct', async () => {
+    const newUser = await service.signup('test@test.com', 'test');
+    fakeUsersService.find = () => Promise.resolve([{ ...newUser }]);
+    const user = await service.signin('test@test.com', 'test');
+    expect(user).toBeDefined();
   });
 });
