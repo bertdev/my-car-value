@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth.service';
-import { User } from './user.entity';
 import { NotFoundException } from '@nestjs/common';
 
 describe('UsersController', () => {
