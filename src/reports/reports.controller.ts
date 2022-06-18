@@ -5,9 +5,16 @@ import {
   Patch,
   UseGuards,
   Param,
+  Get,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/users/guards/auth.guard';
-import { CreateReportDto, ReportDto, ApproveReportDto } from './dtos';
+import {
+  CreateReportDto,
+  ReportDto,
+  ApproveReportDto,
+  GetEstimateDto,
+} from './dtos';
 import { ReportsService } from './reports.service';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from 'src/users/user.entity';
@@ -30,5 +37,10 @@ export class ReportsController {
   @Serialize(ReportDto)
   approveReport(@Param('id') id: string, @Body() data: ApproveReportDto) {
     return this.reportsService.changeApproval(Number(id), data);
+  }
+
+  @Get()
+  createEstimate(@Query() query: GetEstimateDto) {
+    return this.reportsService.createEstimate(query);
   }
 }
