@@ -8,7 +8,7 @@ import {
   Get,
   Query,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/users/guards/auth.guard';
+import { AuthGuard } from '../users/guards/auth.guard';
 import {
   CreateReportDto,
   ReportDto,
@@ -17,9 +17,9 @@ import {
 } from './dtos';
 import { ReportsService } from './reports.service';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
-import { User } from 'src/users/user.entity';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { AdminGuard } from 'src/guards';
+import { User } from '../users/user.entity';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { AdminGuard } from '../guards';
 
 @Controller('reports')
 export class ReportsController {
