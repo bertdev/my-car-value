@@ -7,6 +7,8 @@ This user provides some information about his car (year, model, mileage, make, a
 
 When he manages to sell, he can send a report so that the data from this sale will help the posterior users and this data will be analyzed and approved by an admin user.
 
+In this project, I learn more about nest concepts like guards, interceptors, data serialization, cookies, config module, custom components, and so forth.
+
 
 ## Installation
 
